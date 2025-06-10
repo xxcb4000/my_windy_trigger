@@ -28,16 +28,17 @@ messages = []
 for day, previsions in vents_par_jour.items():
     message = f"📅 Prévisions pour le {day} :\n"
     for dt, wind_kmh in previsions:
-        alert = " ⚠️" if wind_kmh > 30 else ""
+        alert = " ⚠️" if wind_kmh > 20 else ""
         hour = dt.split(" ")[1][:5]
         message += f"  - {hour} : {wind_kmh} km/h{alert}\n"
     messages.append(message)
 
 # 🚀 Envoyer un message Telegram par jour
-for message in messages:
-    telegram_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    payload = {
-        "chat_id": TELEGRAM_CHAT_ID,
-        "text": message
-    }
-    requests.post(telegram_url, data=payload)
+if alert == " ⚠️":
+    for message in messages:
+        telegram_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        payload = {
+            "chat_id": TELEGRAM_CHAT_ID,
+            "text": message
+        }
+        requests.post(telegram_url, data=payload)
