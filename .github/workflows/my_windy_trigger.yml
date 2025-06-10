@@ -1,1 +1,31 @@
 
+name: Windy_trigger
+
+on:
+  schedule:
+    - cron: '0 17 * * *'  # Tous les jours à 17:00 UTC
+  workflow_dispatch:     # Permet aussi de lancer manuellement
+
+jobs:
+  meteo:
+    runs-on: ubuntu-latest
+
+    env:  # <- Injecte les secrets dans les variables d'environnement
+      OPENWEATHER_API_KEY: ${{ secrets.OPENWEATHER_API_KEY }}
+      TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+      TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
+    steps:
+    - name: Cloner le dépôt
+      uses: actions/checkout@v4
+
+    - name: Configurer Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Installer les dépendances
+      run: pip install requests
+
+    - name: Exécuter le script météo
+      run: python my_windy_trigger.py
